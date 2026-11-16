@@ -35,5 +35,9 @@ jobs:
       - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d" # v12
       - name: "Kernel configuration up-to-date"
         run: |
-          export NIX_PATH="nixpkgs=$(nix-instantiate --eval --raw -E 'with import ./pkgs.nix { }; path')"
+          # `--read-write-mode` is required so the Nixpkgs source fetched by
+          # `pkgs.nix` is actually added to the store. Plain `--eval` runs in
+          # read-only mode and only prints an unrealised store path, which
+          # makes the NIX_PATH entry (and the subsequent nix-shell) fail.
+          export NIX_PATH="nixpkgs=$(nix-instantiate --read-write-mode --eval --raw -E 'with import ./pkgs.nix { }; path')"
           bin/kernel-normalize-all --only-check
