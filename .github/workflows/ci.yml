@@ -18,8 +18,6 @@ jobs:
     steps:
       - uses: "actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f"
       - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d"
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
       - name: "Quick Evaluation"
         run: .ci/quick-eval.sh
   # Temporarily disabled.
@@ -28,8 +26,6 @@ jobs:
   #  steps:
   #    - uses: "actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f"
   #    - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d"
-  #      with:
-  #        nix_path: nixpkgs=channel:nixos-unstable
   #    - name: "Instantiation"
   #      run: bin/hydra-eval
   Kernel_configuration_up-to-date:
@@ -37,7 +33,7 @@ jobs:
     steps:
       - uses: "actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f"
       - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d"
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
       - name: "Kernel configuration up-to-date"
-        run: bin/kernel-normalize-all --only-check
+        run: |
+          export NIX_PATH="nixpkgs=$(nix-instantiate --eval --raw -E 'with import ./pkgs.nix { }; path')"
+          bin/kernel-normalize-all --only-check

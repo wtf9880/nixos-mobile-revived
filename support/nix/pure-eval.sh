@@ -2,6 +2,7 @@
 
 #
 # Works around the fact pure evaluation handling outside of Flakes is inconvenient.
+# Flake users can use `nix build .#docs` or `nix develop` instead.
 # This ***will*** fill your Nix store with mobile-nixos inputs.
 #
 

@@ -27,6 +27,11 @@ Processor::Sitemap
   .new(Processor::Page.get_sitemap)
   .generate()
 
+# Ensure the sitemap did not grow an unreachable page.
+Processor::Reachability
+  .new(Processor::Page.get_sitemap, $options["output_dir"])
+  .generate()
+
 Processor::RSS
   .new(Processor::Page.get_sitemap)
   .generate()

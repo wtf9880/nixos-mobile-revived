@@ -9,12 +9,17 @@ Index of in-depth topics.
 
 == Boot
 
-* <<stage-1.adoc#,Stage-1>>
+* <<stage-1.adoc#,Notes about `stage-1`>>
+* <<android/boot.adoc#,Notes about boot on Android-Based Devices>>
 
-== Project Organization
+== Kernel
 
-* <<devices.adoc#,Devices>>
+* <<kernel-builder.adoc#,Notes about the kernel builder>>
 
 == Android-Based Devices
 
-* <<android/partitions.adoc#,Partitions>>
+* <<android/partitions.adoc#,Partitions on Android-Based Devices>>
+
+== Project Organization
+
+* <<devices.adoc#,Notes about devices>>

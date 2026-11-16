@@ -1,0 +1,36 @@
+= Documentation
+include::_support/common.inc[]
+
+This page is the entry point for all Mobile NixOS documentation. Choose the
+section that matches what you want to do.
+
+== Users
+
+* <<getting-started.adoc#,Getting Started>> — install Mobile NixOS on a device
+  and learn how to customise the resulting system.
+* <<devices/index.adoc#,Supported Devices>> — find out whether your device is
+  supported, and read its device-specific notes.
+
+== Porters
+
+* <<porting-guide.adoc#,Device Porting Guide>> — add support for a new device.
+
+== Contributors
+
+ifdef::env-github[]
+* <<../CONTRIBUTING.adoc#,Contributing to Mobile NixOS>> — contribution
+  workflow, including the policy for AI-assisted contributions.
+endif::[]
+ifndef::env-github[]
+* <<contributing.adoc#,Contributing to Mobile NixOS>> — contribution workflow,
+  including the policy for AI-assisted contributions.
+endif::[]
+
+== Reference
+
+* <<about.adoc#,About Mobile NixOS>> — what Mobile NixOS is, and what it is not.
+* <<boot-process.adoc#,Boot Process>> — how a Mobile NixOS system boots.
+* <<options/index.adoc#,Mobile NixOS Options>> — every option defined by Mobile
+  NixOS.
+* <<in-depth/index.adoc#,In-Depth Topics>> — lower-level notes about kernels,
+  Android devices, stage-1, and project organisation.

@@ -6,38 +6,33 @@ As Mobile NixOS is a superset on top of NixOS, you should read the link:https://
 contributing guidelines] of the NixOS project. Many of the points apply just
 the same with Mobile NixOS.
 
-== “AI”-assisted contributions
+== AI-assisted contributions
 
 [NOTE]
 ====
 Using pre-existing *boilerplate*, *snippets*, or *syntax suggestions* from your IDE are not considered as “AI”-assisted changes.
 ====
 
-Contributions written largely with help of LLMs (_Large Language Models_), other “AI” (or non-“AI”), or similar systems are not welcome.
-Such systems of concern are generally using statistical models built on “knowledge” acquired for the purpose without express consent, and with disregard of the authorship and attribution.
+Contributions written with the help of LLMs (_Large Language Models_), other “AI” tools, or similar systems are welcome.
+AI-assisted contributions are held to the same standard as any other contribution:
 
-This includes, but is not limited to:
+ - A human author must review, understand, and take responsibility for every part of the contribution.
+ - The contribution must be tested, and the author must be able to explain and maintain it.
+ - The use of AI tooling must be disclosed in the commit message or the pull request description. A trailer such as `Assisted-by: <tool>` is a good default.
+ - Generated content must respect the licences and attribution requirements of the project and its dependencies.
 
- - Using them to generate comments
- - Using them to generate documentation
- - Using them to generate code
+You remain the author of the contribution.
+Do not submit content that you do not understand or cannot maintain.
 
-Contributions should be largely authored by the people in the commit information, e.g. the `Committer,` `Author`, `Signed-off-by`, and `Co-authored-by` fields, exclusively.
+The same expectations apply to interactions with the repository and community, such as issues, pull requests, and comments.
+You are responsible for anything you post, including AI-generated content.
 
-If you are unsure, or you had help from automated “AI”-generation in _part_ of your contribution, please tell us when contributing.
-It does not mean the contribution will be rejected outright.
-We will evaluate on a case-by-case basis.
-We value honesty, and take it into consideration.
-
-The same applies to interactions with the repository and community.
-Using the output of “AI” as part of your interactions such as issues, pull requests or comments is not welcome.
-
-An exception is made for machine translation of prose, as long as it is clearly outlined that machine translation is used.
+Machine translation of prose is fine; mentioning that machine translation was used helps reviewers.
 
 == Opening issues
 
 Issues you face when using or working with Mobile NixOS should be filed on
-link:https://github.com/mobile-nixos/mobile-nixos/issues[the project's issue tracker].
+link:https://github.com/wtf9880/nixos-mobile-revived/issues[the project's issue tracker].
 
 First verify an existing, open, and recent issue matching your exact problem
 doesn't already exist. In case of doubt, always open a new issue. Sometimes
@@ -57,7 +52,7 @@ ifndef::env-github[]
 See the <<porting-guide.adoc#,Device Porting Guide>>.
 endif::[]
 
-Once a port has been made for a new device, link:https://github.com/mobile-nixos/mobile-nixos/pulls[open a Pull Request].
+Once a port has been made for a new device, link:https://github.com/wtf9880/nixos-mobile-revived/pulls[open a Pull Request].
 
 == Packaging software
 

@@ -1,76 +1,86 @@
 = Getting Started
 include::_support/common.inc[]
 
-== Using the guided installer
+This guide covers the common path for installing and customising Mobile NixOS.
+The exact steps depend on your device, so keep its page handy:
 
-For a limited set of devices, there is a guided installer that can be used
-to do your first-time install.
+* <<devices/index.adoc#,Supported Devices>>
 
-The device page for the supported devices will describe the requirements
-for the installer.
+== Before you start
+
+These instructions assume you know how to prepare your device for development
+use. The details are device-dependent, but they are not specific to Mobile
+NixOS.
+
+In short, the device's bootloader must be unlocked, meaning that it allows
+running custom-built operating system images.
+
+The project is hosted at
+link:https://github.com/wtf9880/nixos-mobile-revived[nixos-mobile-revived].
+
+== Install with the guided installer
+
+For a limited set of devices, there is a guided installer that can be used to
+do your first-time install.
+
+The device page for the supported devices describes the requirements for the
+installer.
 
 * <<devices/pine64-pinephone.adoc#,Pine64 PinePhone>>
 
+== Install manually
 
-== Other options
-
-This guide assumes the user knows how to prepare their device for development
-use. These instructions are device-dependent, but not specific to Mobile NixOS.
-
-Briefly said, the device's bootloader must be unlocked, meaning that it allows
-running custom-built operating system images.
-
-The project is hosted under the link:https://github.com/mobile-nixos/[Mobile NixOS organization],
-as link:https://github.com/mobile-nixos/mobile-nixos[mobile-nixos].
+Use this path when your device does not have a guided installer, or when you
+want to build and install the system yourself.
 
 === Getting the sources
 
-Depending on your configuration, for users with a GitHub account and the proper
-ssh configuration.
+Clone the repository, either over SSH or HTTPS:
 
-```
-$ git clone git@github.com:mobile-nixos/mobile-nixos.git
-```
-
-Or, for everyone else.
-
-```
-$ git clone https://github.com/mobile-nixos/mobile-nixos.git
+```console
+$ git clone git@github.com:wtf9880/nixos-mobile-revived.git
 ```
 
-Nothing else! Everything required is self-contained.
+Or, for everyone else:
 
-If you're interested in testing with a device not-yet-approved, you will have
-to roll up your sleeves and checkout the relevant branch for the PRs.
-The link:https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/checking-out-pull-requests-locally[
-GitHub help article] may help.
+```console
+$ git clone https://github.com/wtf9880/nixos-mobile-revived.git
+$ cd nixos-mobile-revived
+```
 
+Nothing else is required; the build inputs are fetched by Nix.
 
-== Compiling and Running
+If you want to test a device whose support has not been merged yet, check out
+the relevant pull request branch. The
+link:https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/checking-out-pull-requests-locally[
+GitHub help article] explains how.
 
-This is where it becomes harder to make a simple guide. These are different,
-heterogeneous, hardware platforms, with different quirks, compilation steps,
-and mainly, installation steps.
+=== Build and install
 
-Fear not, look for your particular device on the <<devices/index.adoc#,devices list>>
-page, will likely contain the necessary instructions.
+This is where a single guide cannot cover everything. These are different,
+heterogeneous hardware platforms, with different quirks, compilation steps,
+and installation steps.
+
+Find your device on the <<devices/index.adoc#,supported devices>> page; its
+page should contain the necessary instructions.
 
 === Using a known-good revision
 
 Things change, and sometimes things break. This is even more true with Mobile
-NixOS as the project depends on another moving target, NixOS.
+NixOS, since the project depends on another moving target, NixOS.
 
-The npins reference will be updated from time-to-time, but any breakage with
-`nixos-unstable` is a bug, and should be fixed.
+The Nixpkgs revision is pinned in `flake.lock`. It is updated from time to
+time with `nix flake update`; breakage with `nixos-unstable` is a bug and
+should be reported.
 
 == Customizing
 
-You probably will want to toggle options and such things when fiddling with
-Mobile NixOS, at first. The repository is structured in a way to allow you to
-add options to an untracked `local.nix` file. The default `nix-build`
-invocations will respect the content of that file as your configuration.
+You will probably want to toggle options while experimenting with Mobile NixOS.
+The repository is structured so that you can add options in an untracked
+`local.nix` file. The default `nix-build` invocations use that file as your
+configuration.
 
-A sample `local.nix`.
+A sample `local.nix`:
 
 ```nix
 { lib, ... }:
@@ -81,27 +91,56 @@ A sample `local.nix`.
 }
 ```
 
-As Mobile NixOS is a superset on top of NixOS, all NixOS options can be used in
-this configuration file, though take note that most NixOS options will only
-affect the stage-2 (rootfs, system.img) build.
+Because flakes only see files tracked by Git, `local.nix` must be tracked
+(`git add local.nix`) when you evaluate the project through the flake. When
+using `nix-build ./default.nix`, an untracked `local.nix` is used directly.
 
-The <<options/index.adoc#,Options list>> page will be useful, as it provides an
-overview of all the Mobile NixOS specific options.
+As Mobile NixOS is a superset of NixOS, all NixOS options can be used in this
+configuration file. Note that most NixOS options only affect the stage-2
+(rootfs, `system.img`) build.
 
+The <<options/index.adoc#,options list>> gives an overview of all Mobile NixOS
+specific options.
 
 == Using in your system configuration
 
 As the Mobile NixOS configuration may include fixes and quirks for your device,
-it is useful to include its configuration into your system's
-`configuration.nix`.
+it is useful to include it in your system's `configuration.nix`.
 
-Assuming your `NIX_PATH` includes `mobile-nixos=/path/to/mobile-nixos` you can
-import the Mobile NixOS configuration for your device by doing the following.
+=== With flakes
+
+Add this repository as a flake input, then import the device configuration
+where you build your NixOS system:
+
+```nix
+{
+  inputs.mobile-nixos.url = "github:wtf9880/nixos-mobile-revived";
+
+  outputs = { self, nixpkgs, mobile-nixos, ... }: {
+    nixosConfigurations.phone = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux"; # or "armv7l-linux"
+      modules = [
+        ./configuration.nix
+        # "xxx-yyy" is your device "Identifier" from
+        # https://wtf9880.github.io/nixos-mobile-revived/devices,
+        # e.g. "google-marlin".
+        (import "${mobile-nixos}/lib/configuration.nix" { device = "xxx-yyy"; })
+      ];
+    };
+  };
+}
+```
+
+=== With `NIX_PATH`
+
+Assuming your `NIX_PATH` includes `mobile-nixos=/path/to/nixos-mobile-revived`,
+you can import the configuration directly:
 
 ```nix
 # configuration.nix
 {
-  # "xxx-yyy" is your device "Identifier" from https://mobile-nixos.github.io/devices,
+  # "xxx-yyy" is your device "Identifier" from
+  # https://wtf9880.github.io/nixos-mobile-revived/devices,
   # e.g. "google-marlin".
   imports = [
     (import <mobile-nixos/lib/configuration.nix> { device = "xxx-yyy"; })
@@ -109,34 +148,28 @@ import the Mobile NixOS configuration for your device by doing the following.
   ];
 
   # ...
-  # Other configurations...
+  # Other configuration...
   # ...
 }
 ```
 
-While it is possible, it is discouraged to directly import the configuration
-files from the `examples` directories. They may change in ways breaking your
-system configuration. It is recommended to copy and edit the configuration
-files from the `examples` directories if you are basing your configuration off
-of an example.
+While it is possible, directly importing configuration files from the
+`examples` directories is discouraged. They may change in ways that break your
+system configuration. Copy and edit the files from `examples` instead.
 
+== Next steps
 
-== Contributing
-
-This is a big topic, and not something about getting started! Though, quickly
-noted, contributions are currently handled through GitHub pull requests.
-
-If you are unable or unwilling to use GitHub for pull requests, you can e-mail
-contributions, following the usual git via e-mail contribution workflow, to my
-e-mail address, which you will find attached to commits I authored.
-
-Note that there are more in-depth guides about specific contribution topics.
-
+* <<options/index.adoc#,Mobile NixOS options>>
+* <<documentation.adoc#,Full documentation index>>
+* <<porting-guide.adoc#,Device Porting Guide>> — if you want to add a device
 ifdef::env-github[]
-* <<../CONTRIBUTING.adoc#,Contributing Guide>>
+* <<../CONTRIBUTING.adoc#,Contributing to Mobile NixOS>> — contribution workflow
+  and the policy for AI-assisted contributions
 endif::[]
 ifndef::env-github[]
-* <<contributing.adoc#,Contributing Guide>>
+* <<contributing.adoc#,Contributing to Mobile NixOS>> — contribution workflow
+  and the policy for AI-assisted contributions
 endif::[]
-* <<porting-guide.adoc#,Device Porting Guide>>
 
+Questions and bug reports belong on the
+link:https://github.com/wtf9880/nixos-mobile-revived/issues[issue tracker].

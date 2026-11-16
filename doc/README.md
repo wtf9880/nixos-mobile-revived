@@ -45,3 +45,11 @@ Sitemap
 The sitemap is simply a dump of all document files and "catalogs" from as parsed
 by Asciidoctor.
 
+Reachability
+------------
+
+The build also checks that every documentation page can be reached from the
+site navigation or from another page. If you add a page, link it from one of
+the indexes under `doc/` (or from a page that is already reachable). The build
+fails with a list of unreachable pages otherwise.
+

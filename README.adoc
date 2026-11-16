@@ -1,5 +1,5 @@
 ++++
-<div align="center"><a href="https://mobile-nixos.github.io/"><img src="artwork/logo/logo.svg" alt="Mobile NixOS" title="Mobile NixOS" width="500" height="130" /></a></div>
+<div align="center"><a href="https://wtf9880.github.io/nixos-mobile-revived/"><img src="artwork/logo/logo.svg" alt="Mobile NixOS" title="Mobile NixOS" width="500" height="130" /></a></div>
 ++++
 
 *Mobile NixOS* is a superset on top of link:https://nixos.org/nixos/[NixOS Linux],
@@ -7,6 +7,9 @@ link:https://nixos.org/nixpkgs/[Nixpkgs] and link:https://nixos.org/nix/[Nix],
 aiming to abstract away the differences between _mobile_ devices.
 
 In four words: _“NixOS, on your phone”_.
+
+This repository is a fork of
+link:https://github.com/mobile-nixos/mobile-nixos[upstream Mobile NixOS].
 
 ifdef::env-github[]
 Read more: <<doc/about.adoc#,About Mobile NixOS>>.
@@ -21,9 +24,20 @@ endif::[]
 
 == Documentation
 
- * link:https://mobile-nixos.github.io/[The Mobile NixOS website] hosts the rendered link:https://github.com/mobile-nixos/mobile-nixos/tree/development/doc[doc folder] for Mobile NixOS documentation.
+The documentation index is organised by audience: users, porters, contributors,
+and reference material.
 
-As Mobile NixOS is a superset of NixOS Linux, the following documentation applies:
+ * link:https://wtf9880.github.io/nixos-mobile-revived/documentation.html[Documentation index]
+ * link:https://wtf9880.github.io/nixos-mobile-revived/getting-started.html[Getting Started]
+ * link:https://wtf9880.github.io/nixos-mobile-revived/devices/[Supported Devices]
+ * link:https://wtf9880.github.io/nixos-mobile-revived/porting-guide.html[Device Porting Guide]
+ * link:https://wtf9880.github.io/nixos-mobile-revived/contributing.html[Contributing to Mobile NixOS]
+
+The rendered documentation is generated from the
+link:https://github.com/wtf9880/nixos-mobile-revived/tree/development/doc[doc folder]
+in this repository.
+
+As Mobile NixOS is a superset of NixOS Linux, the following documentation also applies:
 
  * link:https://nixos.org/nixos/manual[NixOS Manual] - how to install, configure, and maintain a purely-functional Linux distribution
  * link:https://nixos.org/nixpkgs/manual/[Nixpkgs Manual] - contributing to Nixpkgs and using programming-language-specific Nix expressions
@@ -31,10 +45,10 @@ As Mobile NixOS is a superset of NixOS Linux, the following documentation applie
 
 == Community
 
-Mobile NixOS development and questions is done within the link:https://github.com/mobile-nixos/mobile-nixos[Mobile NixOS GitHub repository].
+Mobile NixOS development and questions happen in the
+link:https://github.com/wtf9880/nixos-mobile-revived[Mobile NixOS fork repository].
 
-The following community resources are also available, for NixOS questions.
-
+ * link:https://github.com/wtf9880/nixos-mobile-revived/issues[The issue tracker] - report bugs and request devices
  * link:https://matrix.to/#/#nix:nixos.org?via=nixos.org&via=matrix.org[Nix and NixOS support channel on the NixOS Matrix Space]
  * link:https://discourse.nixos.org/[Discourse Forum]
 
@@ -45,29 +59,50 @@ The following community resources are also available, for NixOS questions.
 
 == Continuous Integration
 
-There is no published artifacts for the time being, but the documentation
-should point you towards resources that you can use to get started quicker when
-your device is supported.
+There are no published build artifacts at the moment. The GitHub Actions
+workflows check that:
+
+ * all Nix files parse (`.ci/parse-all.sh`);
+ * every device evaluates (`.ci/quick-eval.sh`);
+ * the generated kernel configuration is up-to-date (`bin/kernel-normalize-all --only-check`);
+ * the documentation builds (`.github/workflows/docs.yml`).
+
+The `Instantiation` job (`bin/hydra-eval`) is currently disabled.
+
+== Development
+
+This repository is a flake, with the Nixpkgs pin recorded in `flake.lock`.
+
+ * `nix develop` — start a shell with the tools useful for porting devices;
+ * `nix build .#docs` — build the documentation;
+ * `nix-build ./default.nix --argstr device <identifier> -A outputs.default` —
+   build a device without evaluating the flake.
+
+The non-flake entry points (`default.nix`, `shell.nix`, and `pkgs.nix`) read the
+same `flake.lock`, so they stay in sync with the flake.
 
 == Contributing
-
-There are two ways your contributions can reach this project.
-
-ifdef::env-github[]
- * <<CONTRIBUTING.adoc#,Contributing to Mobile NixOS>>
-endif::[]
-ifndef::env-github[]
- * <<contributing.adoc#,Contributing to Mobile NixOS>>
-endif::[]
- * link:https://github.com/NixOS/nixpkgs/blob/master/CONTRIBUTING.md[Contributing to Nixpkgs or NixOS]
 
 Contributions are always welcome. If it's your first time contributing:
 jump in and don't be scared. Mistakes in your first contributions are room for
 improvement; it is not in our nature to scold new contributors.
 
+ifdef::env-github[]
+Read the <<CONTRIBUTING.adoc#,Contributing to Mobile NixOS>> guide for the
+contribution workflow, including the policy for AI-assisted contributions.
+endif::[]
+ifndef::env-github[]
+Read the <<contributing.adoc#,Contributing to Mobile NixOS>> guide for the
+contribution workflow, including the policy for AI-assisted contributions.
+endif::[]
+
+You can also read the
+link:https://github.com/NixOS/nixpkgs/blob/master/CONTRIBUTING.md[Contributing to Nixpkgs or NixOS]
+guidelines, since many of the points apply here too.
+
 == License
 
-Mobile NixOS is licensed under the link:https://github.com/mobile-nixos/mobile-nixos/blob/development/LICENSE[MIT License].
+Mobile NixOS is licensed under the link:https://github.com/wtf9880/nixos-mobile-revived/blob/development/LICENSE[MIT License].
 
 [NOTE]
 ====

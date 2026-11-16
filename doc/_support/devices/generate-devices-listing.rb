@@ -46,7 +46,7 @@ SUPPORT_LEVEL_ORDER = [
 ]
 
 def githubURL(device)
-  "https://github.com/mobile-nixos/mobile-nixos/tree/development/devices/#{device}"
+  "https://github.com/wtf9880/nixos-mobile-revived/tree/development/devices/#{device}"
 end
 
 def yesno(bool)
@@ -120,7 +120,7 @@ File.open(File.join($out, "devices/index.adoc"), "w") do |file|
 
   #{devices_sections($devicesInfo)}
 
-  Remember to look at the link:https://github.com/mobile-nixos/mobile-nixos/pulls?q=is%3Aopen+is%3Apr+label%3A%22type%3A+port%22[port label]
+  Remember to look at the link:https://github.com/wtf9880/nixos-mobile-revived/pulls?q=is%3Aopen+is%3Apr+label%3A%22type%3A+port%22[port label]
   on the Mobile NixOS pull requests tracker, for upcoming devices.
 
   EOF
