@@ -185,6 +185,13 @@ let
   # Path within <nixpkgs> to refer to the kernel build system's file.
   nixosKernelPath = path + "/pkgs/os-specific/linux/kernel";
 
+  # Newer nixpkgs dropped some of the files we refer to from their kernel
+  # build system. Only refer to a file from nixpkgs when it still exists there.
+  nixosKernelFile = fileName: let
+    file = nixosKernelPath + "/${fileName}";
+  in
+    if builtins.pathExists file then [ file ] else [];
+
   # Same installer as in <nixpkgs>, though they don't expose it :/.
   installkernel = writeTextFile {
     name = "installkernel";
@@ -244,8 +251,8 @@ stdenv.mkDerivation (inputArgs // {
   patches =
     map (p: p.patch) kernelPatches
     # Required for deterministic builds along with some postPatch magic.
-    ++ optional ((lib.versionAtLeast version "4.13" && lib.versionOlder version "5.19")) (nixosKernelPath + "/randstruct-provide-seed.patch")
-    ++ optional ((lib.versionAtLeast version "5.19")) (nixosKernelPath + "/randstruct-provide-seed-5.19.patch")
+    ++ optionals ((lib.versionAtLeast version "4.13" && lib.versionOlder version "5.19")) (nixosKernelFile "randstruct-provide-seed.patch")
+    ++ optionals ((lib.versionAtLeast version "5.19")) (nixosKernelFile "randstruct-provide-seed-5.19.patch")
     ++ optional (enableDefaultYYLOCPatch && lib.versionOlder version "4.0") ./gcc10-extern_YYLOC_global_declaration.patch
     ++ optional (enableForceLogoPatch && lib.versionAtLeast version "5.4")
       (fetchpatch {
