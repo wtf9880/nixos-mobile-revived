@@ -282,11 +282,15 @@ stdenv.mkDerivation (inputArgs // {
     # the buildFlags, but that would require also patching the kernel's
     # toplevel Makefile to add a variable export. This would be likely to
     # cause future patch conflicts.
-    if [ -f scripts/gcc-plugins/gen-random-seed.sh ]; then
-      substituteInPlace scripts/gcc-plugins/gen-random-seed.sh \
-        --replace NIXOS_RANDSTRUCT_SEED \
-        $(echo ${src} ${configfile} | sha256sum | cut -d ' ' -f 1 | tr -d '\n')
-    fi
+    # The seed generator moved to scripts/gen-randstruct-seed.sh in 5.19.
+    for file in scripts/gen-randstruct-seed.sh scripts/gcc-plugins/gen-random-seed.sh; do
+      if [ -f "$file" ]; then
+        substituteInPlace "$file" \
+          --replace NIXOS_RANDSTRUCT_SEED \
+          $(echo ${src} ${configfile} | sha256sum | cut -d ' ' -f 1 | tr -d '\n')
+        break
+      fi
+    done
 
     echo ":: Removing default OEM-provided certificates"
     rm -vf *.x509
