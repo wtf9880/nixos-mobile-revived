@@ -8,8 +8,8 @@ jobs:
   Documentation:
     runs-on: [ubuntu-latest]
     steps:
-      - uses: "actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f"
-      - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d"
+      - uses: "actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f" # v2.3.4
+      - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d" # v12
 
       - name: "Build documentation"
         run: |
@@ -21,7 +21,7 @@ jobs:
           cp -vr --dereference "$output" "www"
 
       - name: Upload archive to Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: 'docs'
           path: 'www'
