@@ -7,6 +7,9 @@ PS4=" $ "
 _nix-instantiate() {
 	args=(
 		--option allow-import-from-derivation false
+		# Without `fetch-tree` (and `flakes` for the GitHub fetcher), `pkgs.nix`
+		# falls back to `fetchGit` and clones the whole Nixpkgs repository.
+		--extra-experimental-features "nix-command flakes fetch-tree"
 		"$@"
 	)
 	(set -x

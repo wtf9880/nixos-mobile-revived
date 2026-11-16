@@ -35,9 +35,20 @@ jobs:
       - uses: "cachix/install-nix-action@07da2520eebede906fbeefa9dd0a2b635323909d" # v12
       - name: "Kernel configuration up-to-date"
         run: |
+          # `fetch-tree` (with `flakes` for the GitHub fetcher) lets `pkgs.nix`
+          # download the pinned Nixpkgs tarball instead of cloning the whole
+          # repository. Put this in `NIX_CONFIG` rather than on the
+          # `nix-instantiate` command line so it is also inherited by the
+          # `nix-build` processes spawned by `bin/kernel-normalize-all`.
+          # Supported Nix versions fall back to `fetchGit`.
+          export NIX_CONFIG="extra-experimental-features = nix-command flakes fetch-tree"
+          #
           # `--read-write-mode` is required so the Nixpkgs source fetched by
           # `pkgs.nix` is actually added to the store. Plain `--eval` runs in
           # read-only mode and only prints an unrealised store path, which
           # makes the NIX_PATH entry (and the subsequent nix-shell) fail.
-          export NIX_PATH="nixpkgs=$(nix-instantiate --read-write-mode --eval --raw -E 'with import ./pkgs.nix { }; path')"
+          export NIX_PATH="nixpkgs=$(nix-instantiate \
+            --read-write-mode \
+            --eval --raw \
+            -E 'with import ./pkgs.nix { }; path')"
           bin/kernel-normalize-all --only-check
