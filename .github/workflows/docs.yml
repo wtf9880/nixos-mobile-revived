@@ -13,7 +13,7 @@ jobs:
 
       - name: "Build documentation"
         run: |
-          nix build .#docs
+          nix --extra-experimental-features "nix-command flakes" build .#docs
 
       - name: Unwrap build output
         run: |

@@ -43,7 +43,7 @@ jobs:
       - name: Repack archive
         run: |
           cd www
-          tar cf ../docs.tar.gz .
+          tar caf ../docs.tar.gz .
 
       - name: Upload repacked archive to Artifacts
         uses: actions/upload-artifact@v4
